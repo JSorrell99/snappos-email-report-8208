@@ -1,0 +1,21 @@
+category	segment	delivered	open_rate	click_rate
+time_of_day	Early Morning	696	0.1351	0.0316
+time_of_day	Late Morning	931	0.1439	0.0322
+time_of_day	Afternoon	1391	0.1747	0.0395
+time_of_day	Evening	704	0.1534	0.0312
+offer	BOGO	466	0.1888	0.0408
+offer	20% off	928	0.1444	0.0377
+offer	30% off	467	0.1328	0.03
+offer	50% off	466	0.2082	0.0451
+offer	New products	929	0.1432	0.0258
+offer	Free shipping	466	0.1395	0.0343
+gender_segmentation	Women - Matching gender	1468	0.2173	0.0484
+gender_segmentation	Women - Opposite gender	884	0.1007	0.0294
+gender_segmentation	Men - Matching gender	518	0.251	0.0463
+gender_segmentation	Men - Opposite gender	852	0.0481	0.0094
+list_health	Hard bounces (remove)	13		
+list_health	Consecutive soft bounces (remove)	7		
+list_health	No opens in 8 weeks (remove)	37		
+list_health	Unique recipients recommended for removal	39		
+list_health	Re-engagement campaign candidates	44		
+list_health	Total recipients	250		
