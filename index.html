@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snappos — Email Performance Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#141922;
+    --ink-soft:#1d2430;
+    --paper:#F5F2EC;
+    --paper-dim:#E7E2D6;
+    --gold:#E8A33D;
+    --teal:#4C8C8A;
+    --red:#C4593B;
+    --text-dim:#9AA3B5;
+    --stitch: repeating-linear-gradient(90deg, var(--gold) 0 6px, transparent 6px 12px);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Inter', sans-serif;
+    line-height:1.55;
+  }
+  h1,h2,h3, .num{ font-family:'Space Grotesk', sans-serif; }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+
+  .wrap{ max-width:960px; margin:0 auto; padding:0 24px; }
+
+  header.hero{
+    padding:80px 0 56px;
+    border-bottom:1px solid #2A3140;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:22px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:22px; height:2px; background:var(--gold);
+    display:inline-block;
+  }
+  h1{
+    font-size:clamp(2.1rem, 5vw, 3.4rem);
+    font-weight:700;
+    margin:0 0 14px;
+    letter-spacing:-0.01em;
+    color:#fff;
+  }
+  .hero-sub{
+    color:var(--text-dim);
+    max-width:56ch;
+    font-size:1.05rem;
+    margin:0 0 34px;
+  }
+  .hero-stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:#2A3140;
+    border:1px solid #2A3140;
+  }
+  .stat{
+    background:var(--ink);
+    padding:22px 20px;
+  }
+  .stat .num{
+    font-size:2.1rem; font-weight:700; color:var(--gold);
+    line-height:1;
+  }
+  .stat .num.teal{ color:var(--teal); }
+  .stat .label{
+    margin-top:8px;
+    font-size:12.5px;
+    color:var(--text-dim);
+    letter-spacing:.03em;
+  }
+
+  section.q{
+    padding:56px 0;
+    border-bottom:1px solid #2A3140;
+  }
+  .q-head{
+    display:flex; gap:18px; align-items:baseline; margin-bottom:8px;
+  }
+  .q-num{
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--text-dim);
+    font-size:13px;
+    white-space:nowrap;
+  }
+  h2{
+    font-size:1.5rem;
+    margin:0;
+    color:#fff;
+    font-weight:600;
+  }
+  .finding{
+    display:inline-block;
+    margin:18px 0 10px;
+    padding:9px 16px 9px 14px;
+    background:var(--ink-soft);
+    border-left:3px solid var(--gold);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13.5px;
+    color:#fff;
+  }
+  p.answer{ color:#D7DAE2; max-width:70ch; }
+
+  .bars{ margin:22px 0 6px; }
+  .bar-row{
+    display:grid;
+    grid-template-columns:130px 1fr 60px;
+    align-items:center;
+    gap:12px;
+    padding:7px 0;
+    font-size:13.5px;
+  }
+  .bar-row .seg-label{ color:#D7DAE2; }
+  .bar-track{
+    position:relative;
+    height:9px;
+    background:#242C3A;
+  }
+  .bar-fill{
+    position:absolute; left:0; top:0; bottom:0;
+    background:var(--gold);
+  }
+  .bar-fill.alt{ background:var(--teal); }
+  .bar-fill.best{ background:var(--red); }
+  .bar-val{ font-family:'IBM Plex Mono', monospace; color:var(--text-dim); text-align:right; }
+
+  .legend{ display:flex; gap:22px; margin:14px 0 24px; font-size:12px; color:var(--text-dim); font-family:'IBM Plex Mono', monospace;}
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .legend i{ width:10px; height:10px; display:inline-block; }
+
+  .tag-list{
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin:18px 0;
+  }
+  .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    background:var(--ink-soft);
+    border:1px dashed #3A4356;
+    padding:4px 9px;
+    color:var(--text-dim);
+  }
+
+  footer{
+    padding:40px 0 70px;
+    color:var(--text-dim);
+    font-size:12.5px;
+  }
+  footer a{ color:var(--gold); }
+
+  @media (max-width:640px){
+    .hero-stats{ grid-template-columns:1fr; }
+    .bar-row{ grid-template-columns:96px 1fr 50px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">8-week campaign audit · 250 recipients · 16 sends</div>
+    <h1>Snappos Email Performance Report</h1>
+    <p class="hero-sub">Two years of guesswork, one spreadsheet: what the list is telling us about who to drop, when to send, what to offer, and who to segment.</p>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="num">39</div>
+        <div class="label">RECIPIENTS TO REMOVE<br>(hard bounces, dead soft-bounce threads, zero opens)</div>
+      </div>
+      <div class="stat">
+        <div class="num teal">44</div>
+        <div class="label">RECIPIENTS FOR RE-ENGAGEMENT<br>(opened early, gone quiet since)</div>
+      </div>
+      <div class="stat">
+        <div class="num">2×</div>
+        <div class="label">OPEN RATE LIFT<br>when product gender matches recipient gender</div>
+      </div>
+    </div>
+  </header>
+
+  <section class="q">
+    <div class="q-head"><span class="q-num">Q1 / 05</span><h2>Who should come off the list?</h2></div>
+    <div class="finding">13 hard bounces &nbsp;+&nbsp; 7 repeat soft-bounce threads &nbsp;+&nbsp; 37 zero-open addresses &nbsp;=&nbsp; 39 unique removals</div>
+    <p class="answer">Hard bounces mean the address is dead — it will never deliver, so those 13 come out immediately. Seven more recipients soft-bounced on two back-to-back sends, which usually signals a permanently full or abandoned inbox. And 37 recipients never opened a single one of the 16 emails across the full two months — they're dragging down deliverability and sender reputation without any upside. Removing the list gets Snappos down to 211 active recipients.</p>
+    <div class="tag-list">
+      <span class="tag">Hard bounce: 13</span>
+      <span class="tag">Soft-bounce pattern: 7</span>
+      <span class="tag">No opens, 8 weeks: 37</span>
+    </div>
+  </section>
+
+  <section class="q">
+    <div class="q-head"><span class="q-num">Q2 / 05</span><h2>What's the best time of day to send?</h2></div>
+    <div class="finding">Afternoon wins — 17.5% open rate, 3.95% click rate</div>
+    <div class="bars">
+      <div class="bar-row"><span class="seg-label">Afternoon</span><div class="bar-track"><div class="bar-fill best" style="width:17.5%"></div></div><span class="bar-val">17.5%</span></div>
+      <div class="bar-row"><span class="seg-label">Evening</span><div class="bar-track"><div class="bar-fill" style="width:15.3%"></div></div><span class="bar-val">15.3%</span></div>
+      <div class="bar-row"><span class="seg-label">Late Morning</span><div class="bar-track"><div class="bar-fill" style="width:14.4%"></div></div><span class="bar-val">14.4%</span></div>
+      <div class="bar-row"><span class="seg-label">Early Morning</span><div class="bar-track"><div class="bar-fill" style="width:13.5%"></div></div><span class="bar-val">13.5%</span></div>
+    </div>
+    <p class="answer">Afternoon sends lead on both open rate and click rate, with evening close behind. Snappos customers are shopping for themselves, not for work — lunchtime and post-workday are when personal inboxes actually get attention, while early-morning inboxes are dominated by work email and people rushing out the door.</p>
+  </section>
+
+  <section class="q">
+    <div class="q-head"><span class="q-num">Q3 / 05</span><h2>Which offers perform best?</h2></div>
+    <div class="finding">50% off and BOGO generate the strongest engagement</div>
+    <div class="bars">
+      <div class="bar-row"><span class="seg-label">50% off</span><div class="bar-track"><div class="bar-fill best" style="width:20.8%"></div></div><span class="bar-val">20.8%</span></div>
+      <div class="bar-row"><span class="seg-label">BOGO</span><div class="bar-track"><div class="bar-fill best" style="width:18.9%"></div></div><span class="bar-val">18.9%</span></div>
+      <div class="bar-row"><span class="seg-label">20% off</span><div class="bar-track"><div class="bar-fill" style="width:14.4%"></div></div><span class="bar-val">14.4%</span></div>
+      <div class="bar-row"><span class="seg-label">Free shipping</span><div class="bar-track"><div class="bar-fill" style="width:14.0%"></div></div><span class="bar-val">14.0%</span></div>
+      <div class="bar-row"><span class="seg-label">New products</span><div class="bar-track"><div class="bar-fill" style="width:14.3%"></div></div><span class="bar-val">14.3%</span></div>
+      <div class="bar-row"><span class="seg-label">30% off</span><div class="bar-track"><div class="bar-fill" style="width:13.3%"></div></div><span class="bar-val">13.3%</span></div>
+    </div>
+    <p class="answer">Open and click rates both peak on the two offers that read as the biggest, most obvious savings — half off or buy-one-get-one. Smaller percentage discounts and a shipping perk (which most retailers already give away) don't generate the same urgency.</p>
+  </section>
+
+  <section class="q">
+    <div class="q-head"><span class="q-num">Q4 / 05</span><h2>Should Snappos segment by gender?</h2></div>
+    <div class="finding">Yes — matching product to recipient gender roughly doubles engagement</div>
+    <div class="legend"><span><i style="background:var(--gold)"></i>Matching gender</span><span><i style="background:var(--teal)"></i>Opposite gender</span></div>
+    <div class="bars">
+      <div class="bar-row"><span class="seg-label">Women, open rate</span><div class="bar-track"><div class="bar-fill" style="width:21.7%"></div></div><span class="bar-val">21.7%</span></div>
+      <div class="bar-row"><span class="seg-label">Women, open rate</span><div class="bar-track"><div class="bar-fill alt" style="width:10.1%"></div></div><span class="bar-val">10.1%</span></div>
+      <div class="bar-row"><span class="seg-label">Men, open rate</span><div class="bar-track"><div class="bar-fill" style="width:25.1%"></div></div><span class="bar-val">25.1%</span></div>
+      <div class="bar-row"><span class="seg-label">Men, open rate</span><div class="bar-track"><div class="bar-fill alt" style="width:4.8%"></div></div><span class="bar-val">4.8%</span></div>
+    </div>
+    <p class="answer">Both open rate and click rate follow the same pattern for women and men: engagement is far higher when the section-1 product matches the recipient's gender than when it doesn't. Sending men's promotions to women (or vice versa) wastes sends on content people are unlikely to act on — splitting into a Men's segment and a Women's segment would lift engagement at no extra cost.</p>
+  </section>
+
+  <section class="q" style="border-bottom:none;">
+    <div class="q-head"><span class="q-num">Q5 / 05</span><h2>Who belongs in a re-engagement campaign?</h2></div>
+    <div class="finding">44 recipients opened in the first month, then went silent</div>
+    <p class="answer">These 44 proved they'll open a Snappos email at least once, so their recent silence looks more like fatigue or a full inbox than a dead address — unlike the 39 recommended for removal above. A "we miss you" send with a stronger incentive, or a preference-update request, is more likely to revive them than continuing business as usual, and it protects open rates and sender reputation better than repeatedly emailing an unresponsive segment.</p>
+  </section>
+
+  <footer>
+    Source: Snappos Email Performance Analysis — Deliverability Insights &amp; Email Overview worksheets, 250 recipients × 16 sends. Full formulas and data in <a href="findings_summary.csv">findings_summary.csv</a>.
+  </footer>
+</div>
+
+</body>
+</html>
